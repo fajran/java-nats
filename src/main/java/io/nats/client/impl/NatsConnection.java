@@ -19,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -1274,7 +1273,12 @@ class NatsConnection implements Connection {
         options.getServers().stream().forEach(x -> servers.add(x.toString()));
 
         if (info != null && info.getConnectURLs() != null) {
-            servers.addAll(Arrays.asList(info.getConnectURLs()));
+            for (String url : info.getConnectURLs()) {
+                if (!url.startsWith("nats://")) {
+                    url = "nats://" + url;
+                }
+                servers.add(url);
+            }
         }
 
         return servers;
